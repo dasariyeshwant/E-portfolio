@@ -27,6 +27,13 @@ introductionTemplate.innerHTML = `
             margin-top: 5px;
             margin-bottom: 0;
             font-weight: 700;
+            display: inline-block;
+        }
+        .display-cursor:after {
+            content: var(--pseudo-cursor);
+        }
+        #para2:after {
+            animation: blink 0.5s step-end infinite alternate;
         }
         .text-over {
             position: relative;
@@ -40,6 +47,13 @@ introductionTemplate.innerHTML = `
         .intro-message-img-desktop {
             display: none;
         }
+
+        @keyframes blink {
+            50% {
+                content: '';
+            }
+        }
+        
         @media only screen and (min-width: 400px) {
             p {
                 font-size: 1rem;
@@ -113,15 +127,21 @@ introductionTemplate.innerHTML = `
                 <img class="intro-message-img" src="./assets/images/intro-message-mobile.jpeg"/>
                 <img class="intro-message-img-desktop" src="./assets/images/intro-desktop.jpeg"/>
                 <figcaption>
-                    <h2>Hello World!</h2>
-                    <p>Front-end Developer, Full-Stack developer & mentor. I develop web applications passionately, and I love what I do.</p>
-                    <p>Get Ready to turn your ideas into reality!</p>
+                    <h2 id="headerText"></h2>
+                    <p id="para1"></p>
+                    <p id="para2"></p>
                 </figcaption>
             </figure>
         </div>
     </div>
 `
 class Introduction extends HTMLElement {
+    headerTextIndex = 0;
+    para1Index = 0;
+    para2Index = 0;
+    headerText = 'Hello World!';
+    para1Text = 'Front-end Developer, Full-Stack developer & mentor. I develop web applications passionately, and I love what I do.';
+    para2Text = 'Get Ready to turn your ideas into reality!';
     constructor() {
         super();
     }
@@ -129,6 +149,48 @@ class Introduction extends HTMLElement {
     connectedCallback() {
         const shadowRoot = this.attachShadow({mode: 'open'});
         shadowRoot.appendChild(introductionTemplate.content.cloneNode(true));
+        this.typeWriter();
+    }
+    
+
+    typeWriter() {
+        if ( this.headerText && this.headerTextIndex <  this.headerText.length) {
+            const headerEle = this.shadowRoot.getElementById('headerText');
+            headerEle.classList.add('display-cursor');
+            headerEle.innerHTML = headerEle.innerHTML + this.headerText.charAt(this.headerTextIndex);
+            this.headerTextIndex++; 
+            setTimeout(() => this.typeWriter(), 100);
+        } else {
+            const headerEle = this.shadowRoot.getElementById('headerText');
+            headerEle.classList.remove('display-cursor');
+            this.typeWriterPara1();
+        }
+        
+    }
+
+    typeWriterPara1() {
+        if ( this.para1Text && this.para1Index <  this.para1Text.length) {
+            const para1Ele = this.shadowRoot.getElementById('para1');
+            para1Ele.classList.add('display-cursor');
+            para1Ele.innerHTML = para1Ele.innerHTML + this.para1Text.charAt(this.para1Index);
+            this.para1Index++; 
+            setTimeout(() => this.typeWriterPara1(), 60);
+        } else {
+            const para1Ele = this.shadowRoot.getElementById('para1');
+            para1Ele.classList.remove('display-cursor');
+            this.typeWriterPara2();
+        }
+        
+    }
+
+    typeWriterPara2() {
+        if ( this.para2Text && this.para2Index <  this.para2Text.length) {
+            const para2Ele = this.shadowRoot.getElementById('para2');
+            para2Ele.classList.add('display-cursor');
+            para2Ele.innerHTML = para2Ele.innerHTML + this.para2Text.charAt(this.para2Index);
+            this.para2Index++; 
+            setTimeout(() => this.typeWriterPara2(), 60);
+        } 
     }
 }
 
