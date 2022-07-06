@@ -54,25 +54,17 @@ class Navbar extends HTMLElement {
     connectedCallback() {
         const showdowRoot = this.attachShadow({mode: 'open'});
         showdowRoot.appendChild(navbarTemplate.content.cloneNode(true));
-        
-        this.addEventListener("click", function(event) {
-            
-            if (event.path[0].classList.contains('fa-bars')) {
-                this.toggle();
-            }
-            
-        });
-        
+        this.shadowRoot.getElementById('menu-icon')
+            .addEventListener('click', () => this.toggle());
     }
     toggle() {
         const navItems = this.shadowRoot.getElementById('nav-items');
         if(navItems && navItems.classList.contains('hidden')) {
             navItems.setAttribute('class', 'nav-items');
-            console.log('it is hidden');
         } else {
             navItems.setAttribute('class', 'nav-items hidden');
         }
     }
 }
 
-customElements.define('nav-bar', Navbar, { extends: 'nav'})
+customElements.define('nav-bar', Navbar)
